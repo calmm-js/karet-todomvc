@@ -1,8 +1,8 @@
 import * as L                      from "partial.lenses"
 import * as R                      from "ramda"
 import Atom                        from "kefir.atom"
-import K, {bind, classes, fromIds} from "kefir.react.html"
-import React                       from "react"
+import K, {bind, classes, fromIds} from "karet.util"
+import React                       from "karet"
 
 import {hash} from "./window"
 
@@ -16,17 +16,17 @@ const routes =
 const route = K(hash, h => routes.find(r => r.hash === h) || routes[0])
 
 const Todo = ({todo, editing = Atom(false)}) =>
-  <K.li {...classes(K(todo, todo =>
-                      L.get(M.Todo.completed, todo) && "completed"),
-                    K(editing, "editing", R.and))}>
-    <K.input className="toggle"
-             type="checkbox"
-             hidden={editing}
-             {...bind({checked: todo.lens(M.Todo.completed)})}/>
-    <K.label className="view"
-             onDoubleClick={() => editing.set(true)}>
+  <li {...classes(K(todo, todo =>
+                    L.get(M.Todo.completed, todo) && "completed"),
+                  K(editing, "editing", R.and))}>
+    <input className="toggle"
+           type="checkbox"
+           hidden={editing}
+           {...bind({checked: todo.lens(M.Todo.completed)})}/>
+    <label className="view"
+           onDoubleClick={() => editing.set(true)}>
       {todo.view(M.Todo.title)}
-    </K.label>
+    </label>
     <button className="destroy"
             onClick={() => todo.modify(M.Todo.remove)}/>
     {K(editing, e => e && (() => {
@@ -37,15 +37,15 @@ const Todo = ({todo, editing = Atom(false)}) =>
          exit()
          newTitle ? todo.lens(M.Todo.title).set(newTitle)
                   : todo.modify(M.Todo.remove)}
-      return <K.input className="edit"
-                      type="text"
-                      onBlur={save}
-                      key="x"
-                      mount={c => c && focus(c)}
-                      defaultValue={todo.view(M.Todo.title)}
-                      onKeyDown={e => e.key === "Enter"  && save(e)
-                                   || e.key === "Escape" && exit()}/>})())}
-  </K.li>
+      return <input className="edit"
+                    type="text"
+                    onBlur={save}
+                    key="x"
+                    ref={c => c && focus(c)}
+                    defaultValue={todo.view(M.Todo.title)}
+                    onKeyDown={e => e.key === "Enter"  && save(e)
+                                 || e.key === "Escape" && exit()}/>})())}
+  </li>
 
 const NewTodo = ({onEntry}) =>
   <input className="new-todo"
@@ -64,10 +64,10 @@ const Filters = () =>
   <ul className="filters">
     {routes.map(r =>
       <li key={r.title}>
-        <K.a {...classes(K(route, c => c.hash === r.hash && "selected"))}
-             href={r.hash}>
+        <a {...classes(K(route, c => c.hash === r.hash && "selected"))}
+           href={r.hash}>
           {r.title}
-        </K.a>
+        </a>
       </li>)}
   </ul>
 
@@ -80,32 +80,32 @@ const All = ({all}) =>
           title => all.modify(M.All.append(M.Todo.create({title})))}/>
       </header>
       <section className="main">
-        <K.input type="checkbox"
+        <input type="checkbox"
                  className="toggle-all"
                  hidden={K(all, M.All.isEmpty)}
                  {...bind({checked: all.lens(M.All.allDone)})}/>
-        <K.ul className="todo-list">
+        <ul className="todo-list">
           {fromIds(K(route, all, ({filter}, all) =>
                      R.flatten(all.map((it, i) => filter(it) ? [i] : []))),
                    i => <Todo key={i} todo={all.lens(i)}/>)}
-        </K.ul>
+        </ul>
       </section>
-      <K.footer className="footer" hidden={K(all, M.All.isEmpty)}>
-        <K.span className="todo-count">
+      <footer className="footer" hidden={K(all, M.All.isEmpty)}>
+        <span className="todo-count">
           {K(all, R.pipe(M.All.numActive, n =>
                          `${n} item${n === 1 ? "" : "s"} left`))}
-        </K.span>
+        </span>
         <Filters/>
-        <K.button className="clear-completed"
-                  onClick={() => all.modify(M.All.clean)}
-                  hidden={K(all, M.All.allActive)}>
+        <button className="clear-completed"
+                onClick={() => all.modify(M.All.clean)}
+                hidden={K(all, M.All.allActive)}>
           Clear completed
-        </K.button>
-      </K.footer>
+        </button>
+      </footer>
     </section>
     <footer className="info">
       <p>Double-click to edit a todo</p>
-      <p><a href="https://github.com/calmm-js/kral-todomvc">GitHub</a></p>
+      <p><a href="https://github.com/calmm-js/karet-todomvc">GitHub</a></p>
     </footer>
   </div>
 
