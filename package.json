@@ -3,10 +3,10 @@
   "private": true,
   "description": "Karet TodoMVC",
   "scripts": {
-    "build": "export NODE_ENV=production && browserify src/todomvc.js -t babelify -t envify -g uglifyify > public/app.js",
+    "build": "export NODE_ENV=production && browserify src/todomvc.js -t babelify -t envify -g uglifyify > docs/app.js",
     "lint": "eslint src test",
     "prepublish": "npm run lint && npm run build",
-    "watch": "watchify src/todomvc.js -v -t [ babelify --sourceMaps=inline ] -o public/app.js"
+    "watch": "watchify src/todomvc.js -v -t [ babelify --sourceMaps=inline ] -o docs/app.js"
   },
   "repository": {
     "type": "git",
