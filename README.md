@@ -1,12 +1,12 @@
-[![Build Status](https://travis-ci.org/calmm-js/kral-todomvc.svg?branch=master)](https://travis-ci.org/calmm-js/kral-todomvc) [![](https://david-dm.org/calmm-js/kral-todomvc.svg)](https://david-dm.org/calmm-js/kral-todomvc) [![](https://david-dm.org/calmm-js/kral-todomvc/dev-status.svg)](https://david-dm.org/calmm-js/kral-todomvc?type=dev)
+[![Build Status](https://travis-ci.org/calmm-js/karet-todomvc.svg?branch=master)](https://travis-ci.org/calmm-js/karet-todomvc) [![](https://david-dm.org/calmm-js/karet-todomvc.svg)](https://david-dm.org/calmm-js/karet-todomvc) [![](https://david-dm.org/calmm-js/karet-todomvc/dev-status.svg)](https://david-dm.org/calmm-js/karet-todomvc?type=dev)
 
-Prebuilt site: [TodoMVC](http://calmm-js.github.io/kral-todomvc/)
+Prebuilt site: [TodoMVC](http://calmm-js.github.io/karet-todomvc/)
 
 To test locally
 
 ```bash
-git clone https://github.com/calmm-js/kral-todomvc.git
-cd kral-todomvc
+git clone https://github.com/calmm-js/karet-todomvc.git
+cd karet-todomvc
 npm install
 ```
 
