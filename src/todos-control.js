@@ -71,7 +71,7 @@ const Filters = () =>
       </li>)}
   </ul>
 
-const All = ({all}) =>
+export default ({todos, all = todos.lens(M.Todos.all)}) =>
   <div>
     <section className="todoapp">
       <header className="header">
@@ -108,5 +108,3 @@ const All = ({all}) =>
       <p><a href="https://github.com/calmm-js/karet-todomvc">GitHub</a></p>
     </footer>
   </div>
-
-export default ({todos}) => <All all={todos.lens(M.Todos.all)}/>
