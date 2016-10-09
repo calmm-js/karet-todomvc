@@ -23,12 +23,10 @@ const Todo = ({todo, editing = Atom(false)}) =>
            type="checkbox"
            hidden={editing}
            {...bind({checked: todo.lens(M.Todo.completed)})}/>
-    <label className="view"
-           onDoubleClick={() => editing.set(true)}>
+    <label className="view" onDoubleClick={() => editing.set(true)}>
       {todo.view(M.Todo.title)}
     </label>
-    <button className="destroy"
-            onClick={() => todo.modify(M.Todo.remove)}/>
+    <button className="destroy" onClick={() => todo.modify(M.Todo.remove)}/>
     {K(editing, e => e && (() => {
       const focus = e => {e.focus(); e.selectionStart = e.value.length}
       const exit = () => editing.set(false)
@@ -81,9 +79,9 @@ export default ({todos, all = todos.lens(M.Todos.all)}) =>
       </header>
       <section className="main">
         <input type="checkbox"
-                 className="toggle-all"
-                 hidden={K(all, M.All.isEmpty)}
-                 {...bind({checked: all.lens(M.All.allDone)})}/>
+               className="toggle-all"
+               hidden={K(all, M.All.isEmpty)}
+               {...bind({checked: all.lens(M.All.allDone)})}/>
         <ul className="todo-list">
           {fromIds(K(route, all, ({filter}, all) =>
                      R.flatten(all.map((it, i) => filter(it) ? [i] : []))),
