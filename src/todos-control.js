@@ -26,7 +26,7 @@ const Todo = ({todo, editing = Atom(false)}) =>
     <label className="view" onDoubleClick={() => editing.set(true)}>
       {todo.view(M.Todo.title)}
     </label>
-    <button className="destroy" onClick={() => todo.modify(M.Todo.remove)}/>
+    <button className="destroy" onClick={() => todo.remove()}/>
     {K(editing, e => e && (() => {
       const focus = e => {e.focus(); e.selectionStart = e.value.length}
       const exit = () => editing.set(false)
@@ -34,7 +34,7 @@ const Todo = ({todo, editing = Atom(false)}) =>
         {const newTitle = e.target.value.trim()
          exit()
          newTitle ? todo.lens(M.Todo.title).set(newTitle)
-                  : todo.modify(M.Todo.remove)}
+                  : todo.remove()}
       return <input className="edit"
                     type="text"
                     onBlur={save}

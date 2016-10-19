@@ -10,8 +10,7 @@ export const Todo = {
   completed,
   title: "title",
   isCompleted,
-  isActive,
-  remove: () => {}
+  isActive
 }
 
 export const All = {
