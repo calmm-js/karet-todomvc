@@ -3,7 +3,7 @@
   "private": true,
   "description": "Karet TodoMVC",
   "scripts": {
-    "build": "cp node_modules/babel-polyfill/dist/polyfill.min.js docs/app.js && NODE_ENV=production browserify src/todomvc.js -t babelify -g envify -g uglifyify > docs/app.js",
+    "build": "cp node_modules/babel-polyfill/dist/polyfill.min.js docs/app.js && NODE_ENV=production browserify src/todomvc.js -t babelify -g envify -g uglifyify >> docs/app.js",
     "lint": "eslint src test",
     "prepublish": "npm run lint && npm run build",
     "watch": "watchify src/todomvc.js -v --loadMaps --debug -t babelify -o docs/app.js"
