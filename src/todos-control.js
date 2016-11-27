@@ -47,7 +47,7 @@ const Todo = ({todo, editing = U.atom("")}) =>
       {todo.view(M.Todo.title)}
     </label>
     <button className="destroy" onClick={() => todo.remove()}/>
-    {U.when(editing, () => <Entry {...{editing, todo}}/>)}
+    {U.ift(editing, () => <Entry {...{editing, todo}}/>)}
   </li>
 
 const NewTodo = ({onEntry}) =>
