@@ -18,12 +18,12 @@
   },
   "homepage": "https://github.com/calmm-js/karet-todomvc#readme",
   "dependencies": {
-    "atom.storage": "^0.3.4",
-    "karet": "^0.2.1",
-    "karet.util": "^0.6.0",
-    "kefir": "^3.6.0",
-    "kefir.atom": "^4.0.1",
-    "partial.lenses": "^4.1.1",
+    "atom.storage": "^0.4.0",
+    "karet": "^0.2.2",
+    "karet.util": "^0.7.1",
+    "kefir": "^3.6.1",
+    "kefir.atom": "^4.0.2",
+    "partial.lenses": "^5.0.0",
     "ramda": "^0.22.1",
     "react-dom": "^15.4.1",
     "todomvc-app-css": "^2.0.6"
@@ -41,7 +41,7 @@
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
     "envify": "^4.0.0",
-    "eslint": "^3.11.0",
+    "eslint": "^3.11.1",
     "eslint-plugin-react": "^6.7.1",
     "uglifyify": "^3.0.4",
     "watchify": "^3.7.0"
