@@ -14,7 +14,7 @@ export const Todo = {
 }
 
 export const All = {
-  allDone: L.lens(R.all(isCompleted), L.set([L.sequence, completed])),
+  allDone: L.lens(R.all(isCompleted), L.set([L.elems, completed])),
   allActive: R.all(isActive),
   numActive: R.pipe(R.filter(isActive), R.length),
   isEmpty: R.pipe(R.length, R.equals(0)),
