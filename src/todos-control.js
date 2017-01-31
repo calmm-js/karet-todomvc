@@ -89,7 +89,7 @@ export default ({todos, all = todos.view(M.Todos.all)}) =>
                {...U.bind({checked: all.view(M.All.allDone)})}/>
         <ul className="todo-list">
           {U.seq(K(route, all, ({filter}, all) =>
-                   R.flatten(all.map((it, i) => filter(it) ? [i] : []))),
+                   L.modify(L.elems, (x,i) => filter(x) ? i : void 0, all)||[]),
                  U.mapCached(i => <Todo key={i} todo={all.view(i)}/>))}
         </ul>
       </section>
