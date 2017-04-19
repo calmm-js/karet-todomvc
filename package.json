@@ -3,10 +3,12 @@
   "private": true,
   "description": "Karet TodoMVC",
   "scripts": {
-    "build": "cp node_modules/babel-polyfill/dist/polyfill.min.js docs/app.js && NODE_ENV=production browserify src/todomvc.js -t babelify -g envify -g uglifyify | uglifyjs -m -c >> docs/app.js",
+    "build": "cp node_modules/babel-polyfill/dist/polyfill.min.js docs/app.js && NODE_ENV=production rollup -c -i src/todomvc.js -f iife >> docs/app.js",
     "lint": "eslint src test",
+    "livereload:docs": "livereload docs",
     "prepublish": "npm run lint && npm run build",
-    "watch": "watchify src/todomvc.js -v --loadMaps --debug -t babelify -o docs/app.js"
+    "watch": "npm run watch:js npm run livereload:docs & wait",
+    "watch:js": "NODE_ENV=dev rollup -w -c --sourcemap inline -i src/todomvc.js -f iife -o docs/app.js"
   },
   "repository": {
     "type": "git",
@@ -18,33 +20,33 @@
   },
   "homepage": "https://github.com/calmm-js/karet-todomvc#readme",
   "dependencies": {
-    "atom.storage": "^0.5.0",
-    "karet": "^1.0.0",
-    "karet.util": "^0.11.1",
+    "atom.storage": "^0.5.2",
+    "karet": "^1.1.4",
+    "karet.util": "^0.11.6",
     "kefir": "^3.7.1",
-    "kefir.atom": "^5.2.1",
-    "partial.lenses": "^9.7.0",
+    "kefir.atom": "^5.3.3",
+    "partial.lenses": "^10.1.1",
     "ramda": "^0.23.0",
-    "react-dom": "^15.4.2",
-    "todomvc-app-css": "^2.0.6"
+    "react-dom": "^15.5.4",
+    "todomvc-app-css": "^2.1.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-eslint": "^7.1.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.2",
     "babel-plugin-transform-react-constant-elements": "^6.23.0",
-    "babel-plugin-transform-react-inline-elements": "^6.22.0",
     "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-react": "^6.23.0",
-    "babel-preset-stage-2": "^6.22.0",
-    "babelify": "^7.3.0",
-    "browserify": "^14.1.0",
-    "envify": "^4.0.0",
-    "eslint": "^3.17.1",
-    "eslint-plugin-react": "^6.10.0",
-    "uglify-js": "^2.8.12",
-    "uglifyify": "^3.0.4",
-    "watchify": "^3.9.0"
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-plugin-react": "^6.10.3",
+    "livereload": "^0.6.2",
+    "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-uglify": "^1.0.1",
+    "rollup-watch": "^3.2.2"
   }
 }
