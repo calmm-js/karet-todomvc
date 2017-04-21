@@ -7,7 +7,7 @@
     "lint": "eslint src test",
     "livereload:docs": "livereload docs",
     "prepublish": "npm run lint && npm run build",
-    "watch": "npm run watch:js npm run livereload:docs & wait",
+    "watch": "npm run watch:js & npm run livereload:docs & wait",
     "watch:js": "NODE_ENV=dev rollup -w -c --sourcemap inline -i src/todomvc.js -f iife -o docs/app.js"
   },
   "repository": {
@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/calmm-js/karet-todomvc#readme",
   "dependencies": {
-    "atom.storage": "^0.5.2",
-    "karet": "^1.1.4",
-    "karet.util": "^0.11.6",
+    "atom.storage": "^0.5.3",
+    "karet": "^1.1.7",
+    "karet.util": "^0.11.7",
     "kefir": "^3.7.1",
-    "kefir.atom": "^5.3.3",
+    "kefir.atom": "^5.3.4",
     "partial.lenses": "^10.1.1",
     "ramda": "^0.23.0",
     "react-dom": "^15.5.4",
@@ -46,7 +46,7 @@
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-uglify": "^1.0.1",
+    "rollup-plugin-uglify": "^1.0.2",
     "rollup-watch": "^3.2.2"
   }
 }
