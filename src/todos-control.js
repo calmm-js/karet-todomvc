@@ -1,7 +1,7 @@
-import * as L    from "partial.lenses"
-import * as R    from "ramda"
-import K, * as U from "karet.util"
-import React     from "karet"
+import * as L     from "partial.lenses"
+import * as R     from "ramda"
+import * as React from "karet"
+import K, * as U  from "karet.util"
 
 import {hash} from "./window"
 
