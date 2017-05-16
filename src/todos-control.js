@@ -1,54 +1,70 @@
 import * as L     from "partial.lenses"
-import * as R     from "ramda"
 import * as React from "karet"
-import K, * as U  from "karet.util"
+import * as U     from "karet.util"
 
 import {hash} from "./window"
 
-import * as M from "./todos-meta"
+const isCompleted = L.get("completed")
+const isActive    = U.complement(isCompleted)
+
+const filter = p => (x, i) => p(x) ? i : void 0
 
 const routes =
-  [{hash: "#/",          filter: () => true,         title: "All"},
-   {hash: "#/active",    filter: M.Todo.isActive,    title: "Active"},
-   {hash: "#/completed", filter: M.Todo.isCompleted, title: "Completed"}]
+  [{hash: "#/",          filter: filter(() => true),  title: "All"},
+   {hash: "#/active",    filter: filter(isActive),    title: "Active"},
+   {hash: "#/completed", filter: filter(isCompleted), title: "Completed"}]
 
-const route = K(hash, h => routes.find(r => r.hash === h) || routes[0])
+const route = U.or(U.find(U.whereEq({hash}), routes), routes[0])
 
-const Entry = ({editing, todo}) => {
-  const focus = e => {
+function focus(e) {
+  if (e) {
     e.focus()
     e.selectionStart = e.value.length
   }
-  const exit = () => editing.set("")
-  const save = e => {
-    const newTitle = e.target.value.trim()
-    exit()
-    newTitle ? todo.view(M.Todo.title).set(newTitle) : todo.remove()
-  }
-  return <input className="edit"
-                type="text"
-                onBlur={save}
-                key="x"
-                ref={c => c && focus(c)}
-                defaultValue={todo.view(M.Todo.title)}
-                onKeyDown={e => e.key === "Enter"  && save(e)
-                             || e.key === "Escape" && exit()}/>
 }
 
-const Todo = ({todo, editing = U.atom("")}) =>
-  <li {...U.classes(K(todo, todo =>
-                      L.get(M.Todo.completed, todo) && "completed"),
-                    editing)}>
-    <input className="toggle"
-           type="checkbox"
-           hidden={editing}
-           {...U.bind({checked: todo.view(M.Todo.completed)})}/>
-    <label className="view" onDoubleClick={() => editing.set("editing")}>
-      {todo.view(M.Todo.title)}
-    </label>
-    <button className="destroy" onClick={() => todo.remove()}/>
-    {U.ift(editing, <Entry {...{editing, todo}}/>)}
-  </li>
+function Entry({editing, todo}) {
+  const exit = () => editing.set(false)
+  function save(e) {
+    const newTitle = e.target.value.trim()
+    exit()
+    if (newTitle)
+      todo.modify(L.set("title", newTitle))
+    else
+      todo.remove()
+  }
+  return (
+    <input className="edit"
+           type="text"
+           onBlur={save}
+           key="x"
+           ref={focus}
+           defaultValue={U.view("title", todo)}
+           onKeyDown={e => e.key === "Enter"  && save(e)
+                        || e.key === "Escape" && exit()}/>
+  )
+}
+
+function Todo({todo}) {
+  const editing = U.atom(false)
+  const checked = U.view("completed", todo)
+  return (
+    <li className={U.cns(U.ift(U.view("completed", todo), "completed"),
+                         U.ift(editing, "editing"))}>
+      <input className="toggle"
+             type="checkbox"
+             hidden={editing}
+             checked={checked}
+             onChange={U.getProps({checked})}/>
+      <label className="view"
+             onDoubleClick={() => editing.set(true)}>
+        {U.view("title", todo)}
+      </label>
+      <button className="destroy" onClick={() => todo.remove()}/>
+      {U.ift(editing, <Entry {...{editing, todo}}/>)}
+    </li>
+  )
+}
 
 const NewTodo = ({onEntry}) =>
   <input className="new-todo"
@@ -67,47 +83,54 @@ const Filters = () =>
   <ul className="filters">
     {routes.map(r =>
       <li key={r.title}>
-        <a {...U.classes(K(route, c => c.hash === r.hash && "selected"))}
+        <a className={U.ift(U.equals(U.view("hash", route), r.hash), "selected")}
            href={r.hash}>
           {r.title}
         </a>
       </li>)}
   </ul>
 
-export default ({todos, all = todos.view(M.Todos.all)}) =>
-  <div>
-    <section className="todoapp">
-      <header className="header">
-        <h1>todos</h1>
-        <NewTodo onEntry={
-          title => all.modify(M.All.append(M.Todo.create({title})))}/>
-      </header>
-      <section className="main">
-        <input type="checkbox"
-               className="toggle-all"
-               hidden={K(all, M.All.isEmpty)}
-               {...U.bind({checked: all.view(M.All.allDone)})}/>
-        <ul className="todo-list">
-          {U.seq(K(route, all, ({filter}, all) =>
-                   L.modify(L.elems, (x,i) => filter(x) ? i : void 0, all)||[]),
-                 U.mapCached(i => <Todo key={i} todo={all.view(i)}/>))}
-        </ul>
+export default ({todos}) => {
+  const allCompleted =
+    U.view(L.foldTraversalLens(L.and, [L.elems, "completed"]), todos)
+  const clear = () => todos.modify(L.remove([L.elems, L.when(isCompleted)]))
+  const onEntry = title => todos.modify(U.append({completed: false, title}))
+  const count = U.pipe(L.countIf(isActive, L.elems),
+                       n => `${n} item${n === 1 ? "" : "s"} left`)
+  return (
+    <div>
+      <section className="todoapp">
+        <header className="header">
+          <h1>todos</h1>
+          <NewTodo onEntry={onEntry}/>
+        </header>
+        <section className="main">
+          <input type="checkbox"
+                 className="toggle-all"
+                 hidden={U.isEmpty(todos)}
+                 checked={allCompleted}
+                 onChange={U.getProps({checked: allCompleted})}/>
+          <ul className="todo-list">
+            {U.seq(todos,
+                   U.lift(L.modify)([L.define([]), L.elems],
+                                    U.view("filter", route)),
+                   U.mapCached(i => <Todo key={i} todo={U.view(i, todos)}/>))}
+          </ul>
+        </section>
+        <footer className="footer" hidden={U.isEmpty(todos)}>
+          <span className="todo-count">{count(todos)}</span>
+          <Filters/>
+          <button className="clear-completed"
+                  onClick={clear}
+                  hidden={U.all(isActive, todos)}>
+            Clear completed
+          </button>
+        </footer>
       </section>
-      <footer className="footer" hidden={K(all, M.All.isEmpty)}>
-        <span className="todo-count">
-          {K(all, R.pipe(M.All.numActive, n =>
-                         `${n} item${n === 1 ? "" : "s"} left`))}
-        </span>
-        <Filters/>
-        <button className="clear-completed"
-                onClick={() => all.modify(M.All.clean)}
-                hidden={K(all, M.All.allActive)}>
-          Clear completed
-        </button>
+      <footer className="info">
+        <p>Double-click to edit a todo</p>
+        <p><a href="https://github.com/calmm-js/karet-todomvc">GitHub</a></p>
       </footer>
-    </section>
-    <footer className="info">
-      <p>Double-click to edit a todo</p>
-      <p><a href="https://github.com/calmm-js/karet-todomvc">GitHub</a></p>
-    </footer>
-  </div>
+    </div>
+  )
+}
