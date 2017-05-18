@@ -24,7 +24,7 @@
     "karet": "^1.2.1",
     "karet.util": "^0.12.2",
     "kefir": "^3.7.1",
-    "partial.lenses": "^11.5.0",
+    "partial.lenses": "^11.6.0",
     "ramda": "^0.23.0",
     "react-dom": "^15.5.4",
     "todomvc-app-css": "^2.1.0"
