@@ -39,7 +39,7 @@ function Entry({editing, todo, value}) {
            onBlur={save}
            key="x"
            ref={focus}
-           value={U.or(value, U.view("title", todo))}
+           value={U.ifte(U.isNil(value), U.view("title", todo), value)}
            onChange={U.getProps({value})}
            onKeyDown={e => e.key === "Enter"  && save(e)
                         || e.key === "Escape" && exit()}/>
