@@ -23,7 +23,7 @@ function focus(e) {
   }
 }
 
-function Entry({editing, todo}) {
+function Entry({editing, todo, value}) {
   const exit = () => editing.set(false)
   function save(e) {
     const newTitle = e.target.value.trim()
@@ -39,14 +39,14 @@ function Entry({editing, todo}) {
            onBlur={save}
            key="x"
            ref={focus}
-           defaultValue={U.view("title", todo)}
+           value={U.or(value, U.view("title", todo))}
+           onChange={U.getProps({value})}
            onKeyDown={e => e.key === "Enter"  && save(e)
                         || e.key === "Escape" && exit()}/>
   )
 }
 
-function Todo({todo}) {
-  const editing = U.atom(false)
+function Todo({todo, editing, value}) {
   const checked = U.view("completed", todo)
   return (
     <li className={U.cns(U.ift(U.view("completed", todo), "completed"),
@@ -61,16 +61,18 @@ function Todo({todo}) {
         {U.view("title", todo)}
       </label>
       <button className="destroy" onClick={() => todo.remove()}/>
-      {U.ift(editing, <Entry {...{editing, todo}}/>)}
+      {U.ift(editing, <Entry {...{editing, todo, value}}/>)}
     </li>
   )
 }
 
-const NewTodo = ({onEntry}) =>
+const NewTodo = ({onEntry, value}) =>
   <input className="new-todo"
          type="text"
          autoFocus
          placeholder="What needs to be done?"
+         value={value}
+         onChange={U.getProps({value})}
          onKeyDown={({key, target}) => {
            const title = target.value.trim()
            if (key === "Enter" && title) {
@@ -90,19 +92,26 @@ const Filters = () =>
       </li>)}
   </ul>
 
-export default ({todos}) => {
+export default ({todos, aux}) => {
   const allCompleted =
     U.view(L.foldTraversalLens(L.and, [L.elems, "completed"]), todos)
   const clear = () => todos.modify(L.remove([L.elems, L.when(isCompleted)]))
   const onEntry = title => todos.modify(U.append({completed: false, title}))
   const count = U.pipe(L.countIf(isActive, L.elems),
                        n => `${n} item${n === 1 ? "" : "s"} left`)
+  const editing = U.view(
+    [L.props("editing", "title"),
+     L.rewrite(L.get(L.props("editing"))),
+     "editing"],
+    aux)
+  const title = U.view("title", aux)
   return (
     <div>
       <section className="todoapp">
         <header className="header">
           <h1>todos</h1>
-          <NewTodo onEntry={onEntry}/>
+          <NewTodo onEntry={onEntry}
+                   value={U.view(["newTodo", L.defaults("")], aux)}/>
         </header>
         <section className="main">
           <input type="checkbox"
@@ -114,7 +123,11 @@ export default ({todos}) => {
             {U.seq(todos,
                    U.lift(L.modify)([L.define([]), L.elems],
                                     U.view("filter", route)),
-                   U.mapCached(i => <Todo key={i} todo={U.view(i, todos)}/>))}
+                   U.mapCached(i =>
+                     <Todo key={i}
+                           todo={U.view(i, todos)}
+                           editing={U.view(L.is(i), editing)}
+                           value={title}/>))}
           </ul>
         </section>
         <footer className="footer" hidden={U.isEmpty(todos)}>
