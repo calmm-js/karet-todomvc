@@ -112,8 +112,7 @@ export default ({todos}) => {
                  onChange={U.getProps({checked: allCompleted})}/>
           <ul className="todo-list">
             {U.seq(todos,
-                   U.lift(L.modify)([L.define([]), L.elems],
-                                    U.view("filter", route)),
+                   U.lift(L.modify)(L.elems, U.view("filter", route)),
                    U.mapCached(i => <Todo key={i} todo={U.view(i, todos)}/>))}
           </ul>
         </section>
