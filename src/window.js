@@ -1,6 +1,6 @@
-import * as Kefir from "kefir"
+import * as Kefir from 'kefir'
 
-export const hash =
-  Kefir.fromEvents(window, "hashchange")
-  .merge(Kefir.constant(0)).toProperty()
+export const hash = Kefir.fromEvents(window, 'hashchange')
+  .merge(Kefir.constant(0))
+  .toProperty()
   .map(() => window.location.hash)
