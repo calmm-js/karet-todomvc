@@ -52,10 +52,7 @@ function Todo({todo}) {
   const checked = U.view('completed', todo)
   return (
     <li
-      className={U.cns(
-        U.ift(U.view('completed', todo), 'completed'),
-        U.ift(editing, 'editing')
-      )}>
+      className={U.cns(U.ift(checked, 'completed'), U.ift(editing, 'editing'))}>
       <input
         className="toggle"
         type="checkbox"
